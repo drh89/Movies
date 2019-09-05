@@ -60,8 +60,7 @@ public class MovieFacadeTest {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(new Movie("Some txt", "More text"));
-            em.persist(new Movie("aaa", "bbb"));
+         
 
             em.getTransaction().commit();
         } finally {
@@ -74,10 +73,10 @@ public class MovieFacadeTest {
 //        Remove any data after each test was run
     }
 
-    // TODO: Delete or change this method 
-    @Test
-    public void testAFacadeMethod() {
-        assertEquals(2, facade.getRenameMeCount(), "Expects two rows in the database");
-    }
+//    // TODO: Delete or change this method 
+//    @Test
+//    public void testAFacadeMethod() {
+//        assertEquals(2, facade.getRenameMeCount(), "Expects two rows in the database");
+//    }
 
 }

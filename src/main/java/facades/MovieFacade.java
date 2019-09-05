@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -16,7 +17,9 @@ public class MovieFacade {
     private static EntityManagerFactory emf;
     
     //Private Constructor to ensure Singleton
-    private MovieFacade() {}
+    private MovieFacade() {
+       
+    }
     
     
     /**
@@ -36,16 +39,28 @@ public class MovieFacade {
         return emf.createEntityManager();
     }
     
-    //TODO Remove/Change this before use
-    public long getRenameMeCount(){
-        EntityManager em = emf.createEntityManager();
-        try{
-            long renameMeCount = (long)em.createQuery("SELECT COUNT(r) FROM RenameMe r").getSingleResult();
-            return renameMeCount;
-        }finally{  
-            em.close();
-        }
+    public List<Movie> getMovies(){
+        EntityManager em = getEntityManager();
+        TypedQuery tq = em.createNamedQuery("Movies.all", Movie.class);
+        List<Movie> movies = tq.getResultList();
+        return movies;
+    }
+    public Movie getMovieByName(String name){
+        EntityManager em = getEntityManager();
+        TypedQuery tq = em.createNamedQuery("Movies.getMovieByName", Movie.class);
+        tq.setParameter("name", name);
+        Movie movie = (Movie) tq.getSingleResult();
+        return movie;
         
     }
+    public Movie createMovie(Movie mov){
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        em.persist(mov);
+        em.getTransaction().commit();
+        return mov;
+    }
+   
+    
 
 }

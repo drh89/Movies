@@ -42,7 +42,7 @@ public class MovieResourceTest {
 
     @BeforeAll
     public static void setUpClass() {
-        emf = EMF_Creator.createEntityManagerFactory(DbSelector.TEST, Strategy.CREATE);
+        emf = EMF_Creator.createEntityManagerFactory(DbSelector.TEST, Strategy.DROP_AND_CREATE);
 
         //NOT Required if you use the version of EMF_Creator.createEntityManagerFactory used above        
         //System.setProperty("IS_TEST", TEST_DB);
@@ -71,8 +71,7 @@ public class MovieResourceTest {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(new Movie("Some txt","More text"));
-            em.persist(new Movie("aaa","bbb"));
+        
            
             em.getTransaction().commit();
         } finally {
@@ -80,30 +79,30 @@ public class MovieResourceTest {
         }
     }
     
-    @Test
-    public void testServerIsUp() {
-        System.out.println("Testing is server UP");
-        given().when().get("/xxx").then().statusCode(200);
-    }
-   
-    //This test assumes the database contains two rows
-    @Test
-    public void testDummyMsg() throws Exception {
-        given()
-        .contentType("application/json")
-        .get("/xxx/").then()
-        .assertThat()
-        .statusCode(HttpStatus.OK_200.getStatusCode())
-        .body("msg", equalTo("Hello World"));   
-    }
-    
-    @Test
-    public void testCount() throws Exception {
-        given()
-        .contentType("application/json")
-        .get("/xxx/count").then()
-        .assertThat()
-        .statusCode(HttpStatus.OK_200.getStatusCode())
-        .body("count", equalTo(2));   
-    }
+//    @Test
+//    public void testServerIsUp() {
+//        System.out.println("Testing is server UP");
+//        given().when().get("/xxx").then().statusCode(200);
+//    }
+//   
+//    //This test assumes the database contains two rows
+//    @Test
+//    public void testDummyMsg() throws Exception {
+//        given()
+//        .contentType("application/json")
+//        .get("/xxx/").then()
+//        .assertThat()
+//        .statusCode(HttpStatus.OK_200.getStatusCode())
+//        .body("msg", equalTo("Hello World"));   
+//    }
+//    
+//    @Test
+//    public void testCount() throws Exception {
+//        given()
+//        .contentType("application/json")
+//        .get("/xxx/count").then()
+//        .assertThat()
+//        .statusCode(HttpStatus.OK_200.getStatusCode())
+//        .body("count", equalTo(2));   
+//    }
 }
