@@ -10,6 +10,7 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries({
+@NamedQuery(name = "Movies.deleteAllRows", query = "DELETE FROM Movie"),
 @NamedQuery(name = "Movies.all", query = "SELECT m FROM Movie m"),
 @NamedQuery(name = "Movies.getMovieByName", query = "SELECT m FROM Movie m WHERE m.movieName LIKE :name")
 })

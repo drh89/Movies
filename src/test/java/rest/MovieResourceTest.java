@@ -1,6 +1,7 @@
 package rest;
 
 import entities.Movie;
+import facades.MovieFacade;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -29,7 +30,7 @@ public class MovieResourceTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     //Read this line from a settings-file  since used several places
-    private static final String TEST_DB = "jdbc:mysql://localhost:3307/startcode_test";
+    private static final String TEST_DB = "jdbc:mysql://localhost:3307/movies_test";
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
@@ -47,62 +48,82 @@ public class MovieResourceTest {
         //NOT Required if you use the version of EMF_Creator.createEntityManagerFactory used above        
         //System.setProperty("IS_TEST", TEST_DB);
         //We are using the database on the virtual Vagrant image, so username password are the same for all dev-databases
-        
         httpServer = startServer();
-        
+
         //Setup RestAssured
         RestAssured.baseURI = SERVER_URL;
         RestAssured.port = SERVER_PORT;
-   
+
         RestAssured.defaultParser = Parser.JSON;
     }
-    
+
     @AfterAll
-    public static void closeTestServer(){
+    public static void closeTestServer() {
         //System.in.read();
-         httpServer.shutdownNow();
+        httpServer.shutdownNow();
     }
-    
+
     // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
     //TODO -- Make sure to change the script below to use YOUR OWN entity class
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
+
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-        
-           
+            em.createNamedQuery("Movies.deleteAllRows").executeUpdate();
+
+            em.getTransaction().commit();
+
+            Movie mov = new Movie(1L, "Star Wars", "Sci/fi", 3.02, 10.0);
+            em.getTransaction().begin();
+            em.persist(mov);
+            em.getTransaction().commit();
+
+            Movie mov1 = new Movie(2L, "Spiderman", "Sci/fi", 2.02, 8.0);
+            em.getTransaction().begin();
+            em.persist(mov1);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
+
     }
-    
+
+    @Test
+    public void testServerIsUp() {
+        System.out.println("Testing is server UP");
+        given().when().get("/movie").then().statusCode(200);
+    }
+
+    @Test
+    public void testDummyMsg() throws Exception {
+        given()
+                .contentType("application/json")
+                .get("/movie/").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("message", equalTo("Welcome to Movie Collection"));
+    }
+
+    @Test
+    public void testGetMovieByName() throws Exception {
+        given()
+                .contentType("application/json")
+                .get("/movie/name/star wars").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("movieName", equalTo("Star Wars"))
+                .body("movieType", equalTo("Sci/fi"));
+    }
 //    @Test
-//    public void testServerIsUp() {
-//        System.out.println("Testing is server UP");
-//        given().when().get("/xxx").then().statusCode(200);
-//    }
-//   
-//    //This test assumes the database contains two rows
-//    @Test
-//    public void testDummyMsg() throws Exception {
+//    public void testGetMovies(){
 //        given()
 //        .contentType("application/json")
-//        .get("/xxx/").then()
+//        .get("/movies/all").then()
 //        .assertThat()
 //        .statusCode(HttpStatus.OK_200.getStatusCode())
-//        .body("msg", equalTo("Hello World"));   
-//    }
-//    
-//    @Test
-//    public void testCount() throws Exception {
-//        given()
-//        .contentType("application/json")
-//        .get("/xxx/count").then()
-//        .assertThat()
-//        .statusCode(HttpStatus.OK_200.getStatusCode())
-//        .body("count", equalTo(2));   
+//        .body("")
+//        
 //    }
 }

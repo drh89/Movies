@@ -29,35 +29,44 @@ public class MovieResource {
             EMF_Creator.Strategy.CREATE);
     private static final MovieFacade FACADE = MovieFacade.getFacadeExample(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public String greeting(){
+        String message = "{\"message\":\"Welcome to Movie Collection\"}";
+       return message;
+    }
     
     
     @Path("/all")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getMovies(){
+    public Response getMovies() {
         List<Movie> movies = FACADE.getMovies();
         return Response.ok().entity(GSON.toJson(movies)).build();
     }
+
     @Path("/demo")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public String demo() {
         return "{\"msg\":\"Hello World\"}";
     }
+
     @Path("/name/{name}")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getMovieByName(@PathParam("name")String name){
+    public Response getMovieByName(@PathParam("name") String name) {
 //        String str = name.replaceAll("\\s+","");
         Movie mov = FACADE.getMovieByName(name);
         return Response.ok().entity(GSON.toJson(mov)).build();
-        
+
     }
 
     @Path("/populatewithdummymovies")
     @GET
 //    @Produces({MediaType.APPLICATION_JSON})
-    public String populate(){
+    public String populate() {
         FACADE.createMovie(new Movie(1L, "The Lion King", "Disney", 1.22, 9.0));
         FACADE.createMovie(new Movie(2L, "Return of the King", "Fantasy", 3.01, 8.0));
         FACADE.createMovie(new Movie(3L, "Braindead", "Splatter", 1.42, 7.0));
@@ -67,7 +76,6 @@ public class MovieResource {
         FACADE.createMovie(new Movie(7L, "Deadpool", "Action", 1.55, 10.0));
         return "Succes!!!";
     }
-
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
@@ -81,6 +89,5 @@ public class MovieResource {
     public void update(Movie entity, @PathParam("id") int id) {
         throw new UnsupportedOperationException();
     }
-    
-    
+
 }
