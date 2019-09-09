@@ -3,13 +3,17 @@ var table = document.getElementById("table");
 var text = document.getElementById("text");
 var btndetail = document.getElementById("btndetail");
 
+var dom = "https://cphbusines.dk/Movies";
+
 
 function getAllMovies() {
     event.preventDefault();
-    let url = "http://localhost:8080/jpareststarter/api/movie/all";
-//    var conf = {menthod: "get"};
-    console.log(text);
-    fetch(url)
+    let url =  dom + "/api/movie/all";
+    var conf = {menthod: "get"};
+    
+    var promise = fetch(url,conf);
+    
+    promise
             .then(res => res.json())
             .then(data => {
                 console.log("data", data);
@@ -28,7 +32,7 @@ function getAllMovies() {
 
 function getMovie(){
     event.preventDefault();
-    let url = "http://localhost:8080/jpareststarter/api/movie/name/" + text.value;
+    let url = dom + "/api/movie/name/" + text.value;
     fetch(url).then(res=> res.json()).then(data=> {
         console.log("data", data);
         
