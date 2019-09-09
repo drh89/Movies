@@ -14,6 +14,7 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -117,13 +118,15 @@ public class MovieResourceTest {
                 .body("movieType", equalTo("Sci/fi"));
     }
 //    @Test
-//    public void testGetMovies(){
+//    public void testGetAllMovies(){
+//        
 //        given()
 //        .contentType("application/json")
 //        .get("/movies/all").then()
 //        .assertThat()
 //        .statusCode(HttpStatus.OK_200.getStatusCode())
-//        .body("")
+//        .body(,Matchers.hasSize(2))
 //        
 //    }
 }
+
